@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(ChatBotApp());
+
+class ChatBotApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ChatBot',
+      home: ChatScreen(),
+    );
+  }
+}
+
+class ChatScreen extends StatefulWidget {
+  @override
+  State createState() => ChatScreenState();
+}
+
+class ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _textController = TextEditingController();
+  final List<String> _messages = [];
+
+  void _handleSubmitted(String text) {
+    _textController.clear();
+    setState(() {
+      _messages.insert(0, text);
+    });
+    // Logic for processing a message and receiving a response
+    _respond(text);
+  }
+
+  void _respond(String text) {
+    // Response logic
+    setState(() {
+      _messages.insert(0, "Hello! I'm very glad to see you");
+    });
+  }
+
+  Widget _buildTextComposer() {
+    return IconTheme(
+      data: IconThemeData(color: Theme.of(context).accentColor),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              child: TextField(
+                controller: _textController,
+                onSubmitted: _handleSubmitted,
+                decoration:
+                    InputDecoration.collapsed(hintText: "Send massage"),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 4.0),
+              child: IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () => _handleSubmitted(_textController.text)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('ChatBot')),
+      body: Column(children: <Widget>[
+        Flexible(
+            child: ListView.builder(
+          padding: EdgeInsets.all(8.0),
+          reverse: true,
+          itemBuilder: (_, int index) => ListTile(
+            title: Text(_messages[index]),
+          ),
+          itemCount: _messages.length,
+        )),
+        Divider(height: 1.0),
+        Container(
+          decoration: BoxDecoration(color: Theme.of(context).cardColor),
+          child: _buildTextComposer(),
+        ),
+      ]),
+    );
+  }
+}
